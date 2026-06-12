@@ -1,6 +1,8 @@
 const adultConsent = document.getElementById("adultConsent");
 const consent = document.getElementById("consent");
 const documentImage = document.getElementById("documentImage");
+const documentPreview = document.getElementById("documentPreview");
+const documentPreviewWrapper = document.getElementById("documentPreviewWrapper");
 const startCameraButton = document.getElementById("startCamera");
 const captureFrameButton = document.getElementById("captureFrame");
 const verifyButton = document.getElementById("verify");
@@ -11,6 +13,7 @@ const captureStatus = document.getElementById("captureStatus");
 const decisionLabel = document.getElementById("decisionLabel");
 
 let liveImageDataUrl = null;
+let documentPreviewUrl = null;
 let mediaStream = null;
 let isCameraReady = false;
 
@@ -312,11 +315,57 @@ function handleLegalAcceptanceChange() {
   updateControls();
 }
 
+
+/**
+ * Limpia la previsualización local de la imagen del documento.
+ */
+function clearDocumentPreview() {
+  if (!documentPreview || !documentPreviewWrapper) {
+    return;
+  }
+
+  if (documentPreviewUrl) {
+    URL.revokeObjectURL(documentPreviewUrl);
+    documentPreviewUrl = null;
+  }
+
+  documentPreview.removeAttribute("src");
+  documentPreviewWrapper.hidden = true;
+}
+
+/**
+ * Muestra una previsualización local de la imagen del documento cargada.
+ */
+function updateDocumentPreview() {
+  clearDocumentPreview();
+
+  if (!documentImage.files || documentImage.files.length !== 1) {
+    return;
+  }
+
+  const file = documentImage.files[0];
+
+  if (!file.type.startsWith("image/")) {
+    documentImage.value = "";
+    throw new Error("El archivo del documento debe ser una imagen JPEG, PNG o WebP.");
+  }
+
+  documentPreviewUrl = URL.createObjectURL(file);
+  documentPreview.src = documentPreviewUrl;
+  documentPreviewWrapper.hidden = false;
+}
+
 /**
  * Gestiona cambios en la imagen del documento.
  */
 function handleDocumentChange() {
-  clearResult();
+  try {
+    clearResult();
+    updateDocumentPreview();
+  } catch (error) {
+    result.textContent = `Error: ${error.message}`;
+  }
+
   updateControls();
 }
 
@@ -329,4 +378,7 @@ verifyButton.addEventListener("click", verifyIdentity);
 
 captureFrameButton.disabled = true;
 canvas.hidden = true;
+if (documentPreviewWrapper) {
+  documentPreviewWrapper.hidden = true;
+}
 updateControls();

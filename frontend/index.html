@@ -17,6 +17,10 @@
     .result-match { color: #1b8a3b; }
     .result-no-match { color: #b00020; }
     .checkbox-line { display: block; margin: 0.5rem 0; }
+    .document-preview-wrapper { margin-top: 0.75rem; }
+    .document-preview-wrapper[hidden] { display: none !important; }
+    .preview-label { margin: 0 0 0.5rem 0; font-weight: 700; }
+    #documentPreview { display: block; width: 100%; max-height: 360px; object-fit: contain; background: #fafafa; }
   </style>
 </head>
 <body>
@@ -44,6 +48,10 @@
   <section>
     <h2>2. Imagen del documento</h2>
     <input type="file" id="documentImage" accept="image/jpeg,image/png,image/webp">
+    <div id="documentPreviewWrapper" class="document-preview-wrapper" hidden>
+      <p class="preview-label">Previsualización de la imagen cargada:</p>
+      <img id="documentPreview" alt="Previsualización de la imagen del documento">
+    </div>
   </section>
 
   <section>
