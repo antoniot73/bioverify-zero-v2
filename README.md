@@ -1,5 +1,5 @@
 ---
-title: BioVerify Zero
+title: BioVerify Zero v2
 emoji: 🔐
 colorFrom: blue
 colorTo: indigo
